@@ -1,0 +1,123 @@
+/* Historický štýl inšpirovaný hradmi */
+body {
+    font-family: 'EB Garamond', serif;
+    margin: 0;
+    padding: 0;
+    background: url('assets/images/parchment.jpg') repeat;
+    color: #2c2c2c;
+}
+
+header {
+    background: linear-gradient(to bottom, #3c2f2f, #2c2c2c);
+    color: #d4af37;
+    text-align: center;
+    padding: 1.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #2c2c2c;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+h1 {
+    font-family: 'Uncial Antiqua', cursive;
+    margin: 0;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+#login-section {
+    margin-right: 20px;
+}
+
+#login-form, #delete-confirm, #selection, #admin-panel, #castle-info {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: url('assets/images/stone-bg.jpg') repeat;
+    border: 4px solid #4a3728;
+    border-radius: 15px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+#login-form h2, #delete-confirm h2, #admin-panel h2, #castle-info h2 {
+    font-family: 'Uncial Antiqua', cursive;
+    color: #3c2f2f;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    color: #3c2f2f;
+    margin-right: 10px;
+}
+
+select, input[type="text"], input[type="password"], input[type="file"] {
+    padding: 8px;
+    margin: 5px 10px 5px 0;
+    border: 2px solid #4a3728;
+    border-radius: 5px;
+    background: #f4e8d0;
+    font-family: 'EB Garamond', serif;
+    color: #2c2c2c;
+}
+
+button {
+    padding: 8px 16px;
+    margin: 5px;
+    background: linear-gradient(to bottom, #6b4e31, #4a3728);
+    color: #d4af37;
+    border: 2px solid #2c2c2c;
+    border-radius: 5px;
+    font-family: 'EB Garamond', serif;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(to bottom, #8a6b41, #6b4e31);
+}
+
+#admin-selection > div, #edit-selection {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(244, 232, 208, 0.7);
+    border-radius: 10px;
+}
+
+#castle-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+#castle-gallery img {
+    max-width: 200px;
+    border: 3px solid #4a3728;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+}
+
+#castle-gallery img:hover {
+    transform: scale(1.05);
+}
+
+.ql-container {
+    background: #f4e8d0;
+    border: 2px solid #4a3728 !important;
+    border-radius: 5px;
+}
+
+.ql-editor {
+    min-height: 150px;
+    color: #2c2c2c;
+}
+
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
