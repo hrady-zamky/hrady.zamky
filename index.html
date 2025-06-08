@@ -1,211 +1,160 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slovenské a České Hrady</title>
-  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/babel-standalone@7/babel.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hrady Slovenska</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&family=Uncial+Antiqua&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans">
-  <div id="root"></div>
-  <script type="text/babel">
-    const { useState, useEffect } = React;
+<body>
+    <header>
+        <h1>Hrady Slovenska</h1>
+        <div id="login-section">
+            <button id="login-btn" onclick="showLogin()">Parchment Prihlásenia</button>
+            <button id="logout-btn" onclick="logout()" style="display: none;">Odhlásiť sa</button>
+        </div>
+    </header>
+    <main>
+        <section id="login-form" style="display: none;">
+            <h2>Prihlásenie Správcu</h2>
+            <form onsubmit="login(event)">
+                <label for="username">Meno:</label>
+                <input type="text" id="username" required>
+                <label for="password">Heslo:</label>
+                <input type="password" id="password" required>
+                <button type="submit">Vstúpiť</button>
+            </form>
+        </section>
 
-    const App = () => {
-      // Sample data for countries, regions, and castles
-      const [data] = useState({
-        Slovensko: {
-          "Bratislavský kraj": ["Bratislavský hrad", "Devin"],
-          "Trenčiansky kraj": ["Trenčiansky hrad", "Beckov"],
-        },
-        Česko: {
-          "Praha": ["Pražský hrad", "Karlštejn"],
-          "Jihočeský kraj": ["Hluboká", "Český Krumlov"],
-        },
-      });
+        <section id="delete-confirm" style="display: none;">
+            <h2>Potvrdenie Vymazania Krajiny</h2>
+            <p>Vymazaním krajiny zmiznú jej časti, kraje i hrady. Zadajte heslo:</p>
+            <form onsubmit="confirmDeleteCountry(event)">
+                <label for="delete-password">Heslo:</label>
+                <input type="password" id="delete-password" required>
+                <button type="submit">Potvrdiť</button>
+                <button type="button" onclick="cancelDelete()">Zrušiť</button>
+            </form>
+        </section>
 
-      // State for articles, admin login, and selected section
-      const [articles, setArticles] = useState([]);
-      const [isAdmin, setIsAdmin] = useState(false);
-      const [username, setUsername] = useState("");
-      const [password, setPassword] = useState("");
-      const [newArticle, setNewArticle] = useState({ title: "", content: "", section: "" });
-      const [selectedCountry, setSelectedCountry] = useState(null);
-      const [selectedRegion, setSelectedRegion] = useState(null);
+        <section id="selection">
+            <label for="country">Krajina:</label>
+            <select id="country" onchange="updateRegions()">
+                <option value="">Vyber krajinu</option>
+            </select>
+            <label for="region">Časť:</label>
+            <select id="region" onchange="updateKraj()" disabled>
+                <option value="">Vyber časť</option>
+            </select>
+            <label for="kraj">Kraj:</label>
+            <select id="kraj" onchange="updateCastles()" disabled>
+                <option value="">Vyber kraj</option>
+            </select>
+            <label for="castle">Hrad:</label>
+            <select id="castle" onchange="displayCastle()" disabled>
+                <option value="">Vyber hrad</option>
+            </select>
+        </section>
 
-      // Load articles from localStorage
-      useEffect(() => {
-        const storedArticles = JSON.parse(localStorage.getItem("articles") || "[]");
-        setArticles(storedArticles);
-      }, []);
-
-      // Save articles to localStorage
-      useEffect(() => {
-        localStorage.setItem("articles", JSON.stringify(articles));
-      }, [articles]);
-
-      // Handle login
-      const handleLogin = (e) => {
-        e.preventDefault();
-        if (username === "admin" && password === "hrad123") {
-          setIsAdmin(true);
-          setUsername("");
-          setPassword("");
-        } else {
-          alert("Nesprávne meno alebo heslo!");
-        }
-      };
-
-      // Handle article submission
-      const handleArticleSubmit = (e) => {
-        e.preventDefault();
-        if (newArticle.title && newArticle.content && newArticle.section) {
-          setArticles([...articles, { ...newArticle, id: Date.now() }]);
-          setNewArticle({ title: "", content: "", section: "" });
-        } else {
-          alert("Vyplňte všetky polia!");
-        }
-      };
-
-      // Render menu with countries, regions, and castles
-      const renderMenu = () => (
-        <div className="bg-white p-4 rounded shadow-md">
-          {Object.keys(data).map((country) => (
-            <div key={country} className="mb-2">
-              <button
-                className="w-full text-left font-bold text-lg text-blue-600 hover:text-blue-800"
-                onClick={() => setSelectedCountry(selectedCountry === country ? null : country)}
-              >
-                {country}
-              </button>
-              {selectedCountry === country && (
-                <div className="ml-4">
-                  {Object.keys(data[country]).map((region) => (
-                    <div key={region} className="mb-1">
-                      <button
-                        className="w-full text-left font-semibold text-gray-700 hover:text-gray-900"
-                        onClick={() => setSelectedRegion(selectedRegion === region ? null : region)}
-                      >
-                        {region}
-                      </button>
-                      {selectedRegion === region && (
-                        <ul className="ml-6 list-disc">
-                          {data[country][region].map((castle) => (
-                            <li key={castle} className="text-gray-600">
-                              {castle}
-                              {/* Display articles for this castle */}
-                              {articles
-                                .filter((article) => article.section === `${country}/${region}/${castle}`)
-                                .map((article) => (
-                                  <div key={article.id} className="mt-2 p-2 bg-gray-50 rounded">
-                                    <h4 className="font-bold">{article.title}</h4>
-                                    <p>{article.content}</p>
-                                  </div>
-                                ))}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
+        <section id="admin-panel" style="display: none;">
+            <h2>Správa Hradov</h2>
+            <h3>Pridať alebo Upraviť</h3>
+            <div id="admin-selection">
+                <div>
+                    <label for="admin-country">Krajina:</label>
+                    <select id="admin-country" onchange="updateAdminRegion()">
+                        <option value="">Vyber krajinu</option>
+                    </select>
+                    <button onclick="showAddForm('country')">Pridať/Upraviť</button>
                 </div>
-              )}
+                <div>
+                    <label for="admin-region">Časť:</label>
+                    <select id="admin-region" onchange="updateAdminKraj()" disabled>
+                        <option value="">Vyber časť</option>
+                    </select>
+                    <button onclick="showAddForm('region')">Pridať/Upraviť</button>
+                    <button onclick="deleteItem('region')" disabled id="delete-region-btn">Odstrániť</button>
+                </div>
+                <div>
+                    <label for="admin-kraj">Kraj:</label>
+                    <select id="admin-kraj" onchange="updateAdminCastles()" disabled>
+                        <option value="">Vyber kraj</option>
+                    </select>
+                    <button onclick="showAddForm('kraj')">Pridať/Upraviť</button>
+                    <button onclick="deleteItem('kraj')" disabled id="delete-kraj-btn">Odstrániť</button>
+                </div>
+                <div>
+                    <label for="admin-castle">Hrad:</label>
+                    <select id="admin-castle" disabled>
+                        <option value="">Vyber hrad</option>
+                    </select>
+                    <button onclick="showAddForm('castle')">Pridať/Upraviť</button>
+                    <button onclick="deleteItem('castle')" disabled id="delete-castle-btn">Odstrániť</button>
+                </div>
             </div>
-          ))}
-        </div>
-      );
 
-      // Admin login form
-      const renderLoginForm = () => (
-        <form onSubmit={handleLogin} className="bg-white p-4 rounded shadow-md mb-4">
-          <h2 className="text-xl font-bold mb-2">Admin Prihlásenie</h2>
-          <input
-            type="text"
-            placeholder="Meno"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 mb-2 border rounded"
-          />
-          <input
-            type="password"
-            placeholder="Heslo"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 mb-2 border rounded"
-          />
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-            Prihlásiť
-          </button>
-        </form>
-      );
-
-      // Admin article form
-      const renderArticleForm = () => (
-        <form onSubmit={handleArticleSubmit} className="bg-white p-4 rounded shadow-md mb-4">
-          <h2 className="text-xl font-bold mb-2">Pridať článok</h2>
-          <input
-            type="text"
-            placeholder="Názov článku"
-            value={newArticle.title}
-            onChange={(e) => setNewArticle({ ...newArticle, title: e.target.value })}
-            className="w-full p-2 mb-2 border rounded"
-          />
-          <textarea
-            placeholder="Obsah článku"
-            value={newArticle.content}
-            onChange={(e) => setNewArticle({ ...newArticle, content: e.target.value })}
-            className="w-full p-2 mb-2 border rounded"
-          />
-          <select
-            value={newArticle.section}
-            onChange={(e) => setNewArticle({ ...newArticle, section: e.target.value })}
-            className="w-full p-2 mb-2 border rounded"
-          >
-            <option value="">Vyber sekciu</option>
-            {Object.keys(data).map((country) =>
-              Object.keys(data[country]).map((region) =>
-                data[country][region].map((castle) => (
-                  <option key={`${country}/${region}/${castle}`} value={`${country}/${region}/${castle}`}>
-                    {country} > {region} > {castle}
-                  </option>
-                ))
-              )
-            )}
-          </select>
-          <button type="submit" className="bg-green-500 text-white p-2 rounded hover:bg-green-600">
-            Pridať článok
-          </button>
-        </form>
-      );
-
-      return (
-        <div className="container mx-auto p-4">
-          <h1 className="text-3xl font-bold text-center mb-4">Slovenské a České Hrady</h1>
-          <p className="text-center mb-6">
-            Vitajte na stránke venovanej krásnym hradom Slovenska a Česka. Preskúmajte históriu a príbehy!
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="col-span-2">{renderMenu()}</div>
-            <div>
-              {!isAdmin ? renderLoginForm() : renderArticleForm()}
-              {isAdmin && (
-                <button
-                  onClick={() => setIsAdmin(false)}
-                  className="bg-red-500 text-white p-2 rounded hover:bg-red-600 mt-2"
-                >
-                  Odhlásiť
-                </button>
-              )}
+            <div id="add-form" style="display: none;">
+                <h3 id="add-form-title"></h3>
+                <form onsubmit="addOrUpdateItem(event)">
+                    <input type="hidden" id="add-type">
+                    <label for="add-name">Názov:</label>
+                    <input type="text" id="add-name" required>
+                    <div id="castle-fields" style="display: none;">
+                        <label for="add-desc">Kronika:</label>
+                        <div id="add-desc-editor" style="height: 200px;"></div>
+                        <label for="add-img-url">Obrazy (URL, oddeľ čiarkou):</label>
+                        <input type="text" id="add-img-url">
+                        <label for="add-img-file">Nahrať obrazy:</label>
+                        <input type="file" id="add-img-file" accept="image/*" multiple>
+                    </div>
+                    <button type="submit">Uložiť</button>
+                    <button type="button" onclick="hideAddForm()">Zrušiť</button>
+                </form>
             </div>
-          </div>
-        </div>
-      );
-    };
 
-    ReactDOM.render(<App />, document.getElementById("root"));
-  </script>
+            <h3>Upraviť Hrad</h3>
+            <div id="edit-selection">
+                <label for="edit-country">Krajina:</label>
+                <select id="edit-country" onchange="updateEditRegion()">
+                    <option value="">Vyber krajinu</option>
+                </select>
+                <label for="edit-region">Časť:</label>
+                <select id="edit-region" onchange="updateEditKraj()" disabled>
+                    <option value="">Vyber časť</option>
+                </select>
+                <label for="edit-kraj">Kraj:</label>
+                <select id="edit-kraj" onchange="updateEditCastles()" disabled>
+                    <option value="">Vyber kraj</option>
+                </select>
+                <label for="edit-castle">Hrad:</label>
+                <select id="edit-castle" onchange="loadCastleData()" disabled>
+                    <option value="">Vyber hrad</option>
+                </select>
+            </div>
+
+            <div id="edit-form" style="display: none;">
+                <h3>Upraviť Hrad: <span id="edit-castle-name"></span></h3>
+                <form onsubmit="editCastle(event)">
+                    <label for="edit-desc">Kronika:</label>
+                    <div id="edit-desc-editor" style="height: 200px;"></div>
+                    <label for="edit-img-url">Obrazy (URL, oddeľ čiarkou):</label>
+                    <input type="text" id="edit-img-url">
+                    <label for="edit-img-file">Nahrať nové obrazy:</label>
+                    <input type="file" id="edit-img-file" accept="image/*" multiple>
+                    <button type="submit">Uložiť</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="castle-info" style="display: none;">
+            <h2 id="castle-name"></h2>
+            <div id="castle-description"></div>
+            <div id="castle-gallery"></div>
+        </section>
+    </main>
+    <script src="script.js"></script>
 </body>
 </html>
