@@ -61,6 +61,11 @@
 
         <section id="admin-panel" style="display: none;">
             <h2>Správa Hradov</h2>
+            <div id="data-management">
+                <button onclick="saveDataToFile()">Uložiť dáta do súboru</button>
+                <label for="load-data-file">Načítať dáta zo súboru:</label>
+                <input type="file" id="load-data-file" accept=".json" onchange="loadDataFromFile(event)">
+            </div>
             <h3>Pridať alebo Upraviť</h3>
             <div id="admin-selection">
                 <div>
