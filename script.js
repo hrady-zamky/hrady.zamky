@@ -9,9 +9,9 @@ let data = {
                 { name: "Spišský hrad", description: "<p>Spišský hrad je jedným z najväčších hradov v strednej Európe.</p>", images: ["https://via.placeholder.com/200"] }
             ]
         },
-        juh: {
-            "Nitriansky kraj": [
-                { name: "Nitriansky hrad", description: "<p>Nitriansky hrad dominuje mestu Nitra.</p>", images: ["https://via.placeholder.com/200"] }
+        Západ: {
+            "Trenčiansky kraj": [
+                { name: Beckov", description: "<p>Býva tam krásna Lauuu.</p>", images: ["https://lh3.googleusercontent.com/gps-cs-s/AC9h4no0fq6p8vRkP8NaeJMCbtwr8yPcIiWcheBnG8UefB03_slRwTO4dd2rcsjx0kSOiJMTDshYqHYYH9K7h3xi4oddjI09Iv-oo_w_l-UQ3AvWz6u2rNVnxN0o6clkNFmYc4FyDP_f=s1360-w1360-h1020"] }
             ]
         }
     }
