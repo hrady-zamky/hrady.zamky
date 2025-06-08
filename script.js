@@ -1,4 +1,4 @@
-let data = JSON.parse(localStorage.getItem('castleData')) || {
+let data = {
     slovensko: {
         sever: {
             "Žilinský kraj": [
@@ -30,11 +30,52 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function saveData() {
+    console.log("Dáta sú pripravené na uloženie do súboru. Kliknite na 'Uložiť dáta do súboru' v admin paneli.");
+}
+
+function saveDataToFile() {
     try {
-        localStorage.setItem('castleData', JSON.stringify(data));
+        const dataStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'castleData.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        alert("Dáta boli uložené do súboru 'castleData.json'.");
     } catch (e) {
-        alert("Chyba pri ukladaní dát do localStorage, pravdepodobne je zaplnené. Skúste odstrániť niektoré obrázky.");
+        alert("Chyba pri ukladaní dát do súboru: " + e.message);
     }
+}
+
+function loadDataFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!file.name.endsWith('.json')) {
+        alert("Vyberte platný JSON súbor!");
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const loadedData = JSON.parse(e.target.result);
+            if (typeof loadedData !== 'object' || loadedData === null) {
+                throw new Error("Neplatná štruktúra dát.");
+            }
+            data = loadedData;
+            updateCountry();
+            updateAdminCountry();
+            updateEditCountry();
+            alert("Dáta boli úspešne načítané!");
+        } catch (err) {
+            alert("Chyba pri načítavaní dát: " + err.message);
+        }
+    };
+    reader.onerror = () => {
+        alert("Chyba pri čítaní súboru!");
+    };
+    reader.readAsText(file);
 }
 
 function showLogin() {
