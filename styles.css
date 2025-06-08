@@ -79,6 +79,24 @@ button:hover {
     background: linear-gradient(to bottom, #8a6b41, #6b4e31);
 }
 
+#data-management {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: rgba(244, 232, 208, 0.7);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#data-management label {
+    margin-right: 5px;
+}
+
+#data-management input[type="file"] {
+    padding: 5px;
+}
+
 #admin-selection > div, #edit-selection {
     margin-bottom: 15px;
     padding: 10px;
